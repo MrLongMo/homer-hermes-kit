@@ -1,0 +1,37 @@
+# 推 tag（例如 app-v0.1.0）就自動砌 Mac 同 Windows 版，放上 GitHub Release
+name: build-app
+on:
+  push:
+    tags: ["app-v*"]
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-14, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.13" }
+      - run: python -m pip install pyyaml==6.0.2 pywebview==5.4 pyinstaller==6.11.1
+      - run: python tools/build.py && cp dist/homer.tar.gz app/homer_mover/data/homer.tar.gz
+      - run: python -m unittest discover -s app/tests
+      - name: Build mac
+        if: runner.os == 'macOS'
+        run: |
+          python -m venv .venv && .venv/bin/pip install pywebview==5.4 pyinstaller==6.11.1
+          bash app/build_mac.sh
+      - name: Build windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cd app
+          Copy-Item ..\dist\homer.tar.gz homer_mover\data\homer.tar.gz -Force
+          python -m PyInstaller --noconfirm --clean --windowed --onefile --name "Homer-Mover-win" --add-data "homer_mover/ui;homer_mover/ui" --add-data "homer_mover/data;homer_mover/data" run.py
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            app/dist/Homer-Mover-mac.zip
+            app/dist/Homer-Mover-win.exe

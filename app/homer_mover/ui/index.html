@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Homer</title>
+<style>
+:root { --bg:#0f1218; --card:#161a22; --line:#2c3340; --text:#e6e2d8; --muted:#9aa0a8; --amber:#f2b84b; --ink:#1a1305; --ok:#7fd18b; --bad:#ff8a80; }
+* { box-sizing: border-box; }
+html, body { margin:0; background:var(--bg); color:var(--text);
+  font:15px/1.6 -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+main { max-width:680px; margin:0 auto; padding:24px 18px 40px; }
+.brand { color:var(--amber); font-weight:700; letter-spacing:.06em; font-size:13px; }
+h1 { font-size:24px; margin:6px 0 4px; } h1 em { color:var(--amber); font-style:normal; }
+.sub { color:var(--muted); margin:0 0 18px; }
+.step { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin:10px 0;
+  opacity:.5; transition:opacity .3s, border-color .3s, transform .3s; }
+.step.active { opacity:1; border-color:var(--amber); transform:translateY(-1px); }
+.step.done { opacity:.85; }
+.head { display:flex; align-items:center; gap:10px; }
+.dot { width:26px; height:26px; border-radius:50%; background:#222834; color:var(--muted); display:grid; place-items:center;
+  font-weight:700; font-size:13px; flex:none; transition:background .3s; }
+.active .dot { background:var(--amber); color:var(--ink); }
+.done .dot { background:var(--ok); color:#0b1a0e; }
+.done .dot::after { content:"✓"; } .done .dot span { display:none; }
+.title { font-weight:700; font-size:16px; flex:1; }
+.state { font-size:13px; color:var(--muted); }
+.body { margin:10px 0 2px 36px; display:none; } .active .body { display:block; animation:pop .35s ease; }
+@keyframes pop { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.body p { margin:6px 0; color:var(--muted); } .body p b { color:var(--text); }
+button { font:inherit; font-weight:700; border-radius:10px; padding:10px 16px; border:1px solid var(--line);
+  background:#222834; color:var(--text); cursor:pointer; margin:6px 8px 0 0; }
+button.primary { background:var(--amber); color:var(--ink); border-color:var(--amber); }
+button:disabled { opacity:.5; cursor:default; }
+.bar { height:8px; background:#222834; border-radius:999px; overflow:hidden; margin:10px 0 4px; }
+.bar i { display:block; height:100%; width:0; background:var(--amber); transition:width .3s; }
+.bar.spin i { width:35%; animation:slide 1.2s infinite ease-in-out; }
+@keyframes slide { from { margin-left:-35%; } to { margin-left:100%; } }
+.code { font:700 28px/1.2 ui-monospace, Menlo, Consolas, monospace; letter-spacing:.12em; color:var(--amber); margin:8px 0; }
+pre.msg { background:#0b0e13; border:1px solid var(--line); border-radius:10px; padding:10px; white-space:pre-wrap;
+  max-height:180px; overflow:auto; font-size:12.5px; color:var(--muted); }
+ul.list { margin:6px 0; padding-left:20px; } ul.list li { margin:3px 0; }
+.err { background:#1f1414; border:1px solid #6b2d2d; color:var(--bad); border-radius:10px; padding:10px 12px; margin:10px 0;
+  white-space:pre-wrap; font-size:13px; display:none; }
+input[type=text] { font:inherit; background:#0b0e13; color:var(--text); border:1px solid var(--line); border-radius:10px;
+  padding:9px 12px; width:100%; max-width:320px; }
+.files span { display:inline-block; background:#222834; border-radius:999px; padding:2px 10px; margin:3px 4px 0 0; font-size:13px; }
+.files span.got { background:#173020; color:var(--ok); }
+details.log { margin-top:22px; color:var(--muted); font-size:12px; }
+details.log pre { max-height:220px; overflow:auto; white-space:pre-wrap; background:#0b0e13; padding:8px; border-radius:8px; }
+.foot { color:var(--muted); font-size:12px; margin-top:18px; }
+.pv { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; margin:8px 0; }
+.pv button { margin:0; text-align:left; padding:10px 12px; position:relative; }
+.pv button small { display:block; font-weight:400; color:var(--muted); font-size:12.5px; margin-top:2px; }
+.pv button.sug { border-color:var(--amber); }
+details.more { margin:10px 0; } details.more summary { cursor:pointer; color:var(--muted); font-size:14px; margin-bottom:6px; }
+.keyrow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.keyrow select, .keyrow input { font:inherit; background:#0b0e13; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:9px 10px; }
+.keyrow input { flex:1 1 200px; min-width:0; } .keyrow button { margin:0; }
+.small { font-size:12.5px; color:var(--muted); }
+.pv button .tag { position:absolute; top:-8px; right:8px; background:var(--amber); color:var(--ink); font-size:11px; border-radius:999px; padding:0 7px; }
+</style>
+
+</head>
+<body>
+<main>
+  <div class="brand" data-t="brand"></div>
+  <h1><span data-t="h1_a"></span><em>Hermes</em></h1>
+  <p class="sub" data-t="sub"></p>
+
+  <div class="step" id="s1"><div class="head"><div class="dot"><span>1</span></div><div class="title" data-t="s1_title"></div><div class="state"></div></div>
+    <div class="body">
+      <p id="s1-text"></p>
+      <div class="bar" id="s1-bar" hidden><i></i></div>
+      <div id="s1-btns"></div>
+    </div></div>
+
+  <div class="step" id="s2"><div class="head"><div class="dot"><span>2</span></div><div class="title" data-t="s2_title"></div><div class="state"></div></div>
+    <div class="body">
+      <p data-t="s2_text"></p>
+      <div class="bar spin"><i></i></div>
+    </div></div>
+
+  <div class="step" id="s3"><div class="head"><div class="dot"><span>3</span></div><div class="title" data-t="s3_title"></div><div class="state"></div></div>
+    <div class="body">
+      <p data-t="s3_text"></p>
+      <div class="pv" id="s3-pv">
+        <button data-pv="grok"><span data-t="pv_grok"></span><small data-t="pv_grok_d"></small></button>
+        <button data-pv="chatgpt"><span data-t="pv_chatgpt"></span><small data-t="pv_chatgpt_d"></small></button>
+        <button data-pv="nous"><span data-t="pv_nous"></span><small data-t="pv_nous_d"></small></button>
+        <button data-pv="openrouter"><span data-t="pv_openrouter"></span><small data-t="pv_openrouter_d"></small></button>
+      </div>
+      <div id="s3-code" hidden>
+        <p id="s3-nous" hidden data-t="s3_nous_hint"></p>
+        <p data-t="s3_code"></p>
+        <div class="code" id="s3-codev"></div>
+        <button id="s3-reopen" data-t="s3_reopen"></button>
+        <p data-t="s3_wait"></p>
+      </div>
+      <details class="more" id="s3-more"><summary data-t="more"></summary>
+        <div class="pv">
+          <button data-pv="minimax"><span data-t="pv_minimax"></span><small data-t="pv_minimax_d"></small></button>
+        </div>
+        <p><b data-t="key_title"></b><br><span data-t="key_text"></span></p>
+        <div class="keyrow">
+          <select id="key-which">
+            <option value="deepseek">DeepSeek</option><option value="gemini">Google Gemini</option>
+            <option value="openai">OpenAI API</option><option value="openrouter">OpenRouter</option><option value="xai">xAI API</option><option value="anthropic">Claude API</option>
+          </select>
+          <input type="password" id="key-val" autocomplete="off" spellcheck="false">
+          <button class="primary" id="key-save" data-t="key_save"></button>
+        </div>
+        <p class="small" data-t="no_claude"></p>
+      </details>
+      <button id="s3-skip" data-t="s3_skip"></button>
+      <div class="bar spin" id="s3-bar" hidden><i></i></div>
+    </div></div>
+
+  <div class="step" id="s4"><div class="head"><div class="dot"><span>4</span></div><div class="title" data-t="s4_title"></div><div class="state"></div></div>
+    <div class="body">
+      <div id="s4-start">
+        <p data-t="s4_intro"></p>
+        <button class="primary" id="s4-go" data-t="s4_go"></button><button id="s4-skip" data-t="s4_skip"></button>
+      </div>
+      <div id="s4-msg" hidden>
+        <p><b data-t="s4_steps"></b></p>
+        <button class="primary" id="s4-copy" data-t="copy"></button><button id="s4-open" data-t="open_gb"></button>
+        <pre class="msg" id="s4-text"></pre>
+        <p data-t="s4_dl"></p>
+        <div class="files"><span id="f-export">grok-bot-export.json</span><span id="f-handoff">grok-bot-handoff.zip</span></div>
+        <button id="s4-pick" data-t="s4_pick"></button>
+      </div>
+      <div id="s4-preview" hidden>
+        <p><b data-t="s4_will"></b></p>
+        <ul class="list" id="s4-lines"></ul>
+        <p id="s4-zip"></p>
+        <p data-t="s4_botname"></p>
+        <input type="text" id="s4-bot">
+        <div><button class="primary" id="s4-move" data-t="s4_move"></button></div>
+      </div>
+      <div id="s4-done" hidden>
+        <p><b id="s4-done-title"></b></p>
+        <ul class="list" id="s4-done-lines"></ul>
+        <button id="s4-folder" hidden data-t="s4_folder"></button>
+        <button id="s4-again" data-t="s4_again"></button><button class="primary" id="s4-next" data-t="s4_next"></button>
+      </div>
+      <div class="bar spin" id="s4-bar" hidden><i></i></div>
+    </div></div>
+
+  <div class="step" id="s5"><div class="head"><div class="dot"><span>5</span></div><div class="title" data-t="s5_title"></div><div class="state"></div></div>
+    <div class="body">
+      <p data-t="s5_routines"></p>
+      <p id="s5-noai" hidden data-t="s5_noai"></p>
+      <p id="s5-nous" hidden data-t="s5_nous"></p>
+      <p data-t="s5_start"></p>
+      <button class="primary" id="s5-go" data-t="s5_go"></button>
+    </div></div>
+
+  <div class="err" id="err"></div>
+  <p><a href="#" id="help" data-t="help" style="color:var(--amber)"></a></p>
+  <details class="log"><summary data-t="log"></summary><pre id="log"></pre></details>
+  <p class="foot" data-t="foot"></p>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+let api, T = {}, st = {}, codeUrl = "", provider = null;
+const f = (k, o) => (T[k] || k).replace(/\{(\w+)\}/g, (_, n) => o[n]);
+
+function applyT() {
+  document.querySelectorAll("[data-t]").forEach(el => { el.innerHTML = T[el.dataset.t] || ""; });
+  document.documentElement.lang = T.lang === "en" ? "en" : "zh-Hant";
+  document.title = T.window_title;
+  $("s4-bot").placeholder = T.s4_botph;
+  $("key-val").placeholder = T.key_ph;
+}
+function setStep(n) {
+  for (let i = 1; i <= 5; i++) {
+    const el = $("s" + i);
+    el.classList.toggle("active", i === n);
+    el.classList.toggle("done", i < n);
+    el.querySelector(".state").textContent = i < n ? T.done_state : (i === n ? T.doing_state : "");
+  }
+  $("err").style.display = "none";
+  if (n === 2) api.install_profile();
+  if (n === 5) { $("s5-noai").hidden = !!provider; $("s5-nous").hidden = provider !== "nous"; }
+}
+function showErr(m) { const e = $("err"); e.textContent = m; e.style.display = "block"; busy(false); }
+function busy(on) {
+  $("s4-bar").hidden = !on; $("s3-bar").hidden = !on;
+  document.querySelectorAll(".active button").forEach(b => b.disabled = on);
+}
+function btn(label, fn, primary) { const b = document.createElement("button"); b.innerHTML = label; if (primary) b.className = "primary"; b.onclick = fn; return b; }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+
+async function refresh() {
+  $("s1-text").textContent = T.s1_checking;
+  st = await api.status();
+  provider = st.provider || null;
+  document.querySelectorAll("#s3-pv button").forEach(b => {
+    const sug = b.dataset.pv === st.suggest;
+    b.classList.toggle("sug", sug);
+    b.querySelector(".tag")?.remove();
+    if (sug) { const s = document.createElement("span"); s.className = "tag"; s.textContent = T.recommended; b.append(s); }
+  });
+  const h = st.hermes, box = $("s1-btns"); box.innerHTML = "";
+  if (!h.found) {
+    $("s1-text").innerHTML = T.s1_missing;
+    box.append(btn(T.s1_install, () => { busy(true); $("s1-bar").hidden = false; api.install_hermes(); }, true), btn(T.s1_recheck, refresh));
+    return setStep(1);
+  }
+  if (!h.ok) {
+    $("s1-text").innerHTML = f("s1_old", { v: esc(h.version || "?") });
+    box.append(btn(T.s1_update, () => { busy(true); $("s1-bar").hidden = false; $("s1-bar").classList.add("spin"); api.update_hermes(); }, true));
+    return setStep(1);
+  }
+  if (!st.profile) return setStep(2);
+  if (!st.login) return setStep(3);
+  setStep(4);
+}
+
+window.onEvent = (e) => {
+  if (e.kind === "log") { const l = $("log"); l.textContent += e.line + "\n"; l.scrollTop = l.scrollHeight; return; }
+  if (e.kind === "error") return showErr(e.message);
+  if (e.kind === "progress") {
+    if (e.step === 1) { $("s1-text").textContent = e.text; if (e.pct != null) $("s1-bar").querySelector("i").style.width = e.pct + "%"; }
+    if (e.step === 3 || e.step === 4) busy(true);
+    return;
+  }
+  if (e.kind === "done") { busy(false); if (e.step === 3) { provider = e.provider; setStep(4); } else refresh().catch(x => showErr(String(x))); return; }
+  if (e.kind === "code") {
+    codeUrl = e.url; $("s3-code").hidden = false; $("s3-codev").textContent = e.code || T.s3_nocode;
+    $("s3-nous").hidden = provider !== "nous"; $("s3-reopen").disabled = false; return;
+  }
+  if (e.kind === "message") {
+    busy(false); $("s4-start").hidden = true; $("s4-done").hidden = true; $("s4-preview").hidden = true; $("s4-msg").hidden = false;
+    $("s4-text").textContent = e.text; $("f-export").className = ""; $("f-handoff").className = ""; return;
+  }
+  if (e.kind === "files") { $("f-export").classList.toggle("got", !!e.files.export); $("f-handoff").classList.toggle("got", !!e.files.handoff); return; }
+  if (e.kind === "preview") {
+    busy(false); $("s4-msg").hidden = true; $("s4-preview").hidden = false;
+    $("s4-lines").innerHTML = e.lines.map(l => `<li>${esc(l)}</li>`).join("");
+    const z = e.zip;
+    $("s4-zip").innerHTML = !z ? T.s4_nozip
+      : z.ok ? f("s4_zipok", { n: z.files }) + (z.skipped.length ? f("s4_zipskip", { n: z.skipped.length }) : "")
+      : T.s4_zipbad + " " + esc(z.problems.join("; "));
+    $("s4-bot").value = e.bot || ""; $("s4-bot").focus(); return;
+  }
+  if (e.kind === "moved") {
+    busy(false); $("s4-preview").hidden = true; $("s4-done").hidden = false;
+    const r = e.result, out = [];
+    out.push(...r.imported.slice(0, 4));
+    if (r.folder) out.push(f("s4_files", { n: r.files, f: r.folder }));
+    if (r.zip_problems) out.push(T.e_nofiles + r.zip_problems.join("; "));
+    if (r.items.length) out.push(T.s4_open + r.items.join("; "));
+    if (r.folder && !r.memory) out.push(T.s4_memfull);
+    $("s4-done-title").textContent = f("s4_moved", { b: r.bot });
+    $("s4-done-lines").innerHTML = out.map(l => `<li>${esc(l)}</li>`).join("");
+    $("s4-folder").hidden = !r.folder; $("s4-folder").onclick = () => api.open_folder(r.folder);
+  }
+};
+
+window.addEventListener("pywebviewready", async () => {
+  api = window.pywebview.api;
+  T = await api.strings();
+  applyT();
+  $("key-save").onclick = () => { provider = "key:" + $("key-which").value; busy(true); api.save_key($("key-which").value, $("key-val").value); $("key-val").value = ""; };
+  document.querySelectorAll("#s3 .pv button").forEach(b => b.onclick = () => {
+    provider = b.dataset.pv; $("s3-code").hidden = true; busy(true); api.ai_login(b.dataset.pv);
+  });
+  $("s3-reopen").onclick = () => api.open_url(codeUrl);
+  $("s3-skip").onclick = () => { provider = null; setStep(4); };
+  $("s4-go").onclick = () => { busy(true); api.prepare_move(); };
+  $("s4-skip").onclick = () => setStep(5);
+  $("s4-copy").onclick = async () => { const ok = await api.copy($("s4-text").textContent); $("s4-copy").textContent = ok ? T.copied : T.copy_fail; };
+  $("s4-open").onclick = () => api.open_grok_bot();
+  $("s4-pick").onclick = () => api.choose_file();
+  $("s4-move").onclick = () => { busy(true); api.do_move($("s4-bot").value.trim() || T.default_bot); };
+  $("s4-again").onclick = () => { $("s4-copy").textContent = T.copy; busy(true); api.prepare_move(); };
+  $("s4-next").onclick = () => setStep(5);
+  $("s5-go").onclick = () => api.finish();
+  $("help").onclick = (e) => { e.preventDefault(); api.open_url(T.lang === "en" ? "https://github.com/MrLongMo/homer-hermes-kit#faq" : "https://github.com/MrLongMo/homer-hermes-kit#常見問題"); };
+  refresh().catch(e => showErr(String(e)));
+});
+</script>
+</body>
+</html>

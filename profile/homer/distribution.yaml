@@ -1,0 +1,13 @@
+name: homer
+version: 0.2.1
+description: "Homer 出品：Grok Bot 搬家 + 繁中 + 慳 token 嘅 Hermes 助手 / Move from Grok Bot to Hermes, Chinese-ready and token-lean"
+hermes_requires: ">=0.22.6"
+author: "Homer 出品"
+license: "MIT"
+
+# 唔使任何 key：用 Grok 月費登入（OAuth）。
+env_requires:
+  - name: OPENROUTER_API_KEY
+    description: "（可選）慳 token 模式：日常傾偈轉用平模型 / Optional: cheap model for daily chat"
+    required: false
+    default: ""

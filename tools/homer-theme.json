@@ -1,0 +1,31 @@
+{
+  "name": "homer",
+  "label": "Homer 出品",
+  "description": "Homer 出品 — 深夜藍配琥珀金",
+  "colors": {
+    "background": "#0f1218",
+    "foreground": "#e6e2d8",
+    "card": "#161a22",
+    "cardForeground": "#e6e2d8",
+    "muted": "#1f242e",
+    "mutedForeground": "#9aa0a8",
+    "popover": "#1a1f28",
+    "popoverForeground": "#e6e2d8",
+    "primary": "#f2b84b",
+    "primaryForeground": "#1a1305",
+    "secondary": "#262c37",
+    "secondaryForeground": "#c9c4b8",
+    "accent": "#232a35",
+    "accentForeground": "#efe9dc",
+    "border": "#2c3340",
+    "input": "#2c3340",
+    "ring": "#f2b84b",
+    "midground": "#f2b84b",
+    "destructive": "#d9534f",
+    "destructiveForeground": "#fff5f5",
+    "sidebarBackground": "#0b0e13",
+    "sidebarBorder": "#1c212a",
+    "userBubble": "#2a2416",
+    "userBubbleBorder": "#5a4a22"
+  }
+}

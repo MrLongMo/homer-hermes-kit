@@ -1,0 +1,20 @@
+# Homer 出品 — Hermes profile 設定
+# 只寫 Homer 改過嘅設定，其他沿用 Hermes 預設。
+
+# 模型唔喺度寫死：Homer 搬家程式登入 Grok 成功之後先設做 Grok。
+# 冇 Grok 嘅用家就照 Hermes 本身嘅開箱畫面揀 AI，唔會見到錯誤。
+
+display:
+  # 介面用繁體中文。想轉英文：Settings → Appearance → Language，或改做 en。
+  language: zh-hant
+
+compression:
+  # 慳 token：用到 40% context 就自動壓縮（Hermes 預設 50%）。
+  threshold: 0.40
+
+auxiliary:
+  # 雜務（壓縮、改標題）唔使諗咁深，慳 token 同快啲。
+  compression:
+    reasoning_effort: low
+  title_generation:
+    reasoning_effort: none
