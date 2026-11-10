@@ -16,14 +16,12 @@ sub = sub.replace('msg.textContent = "網路連線有問題，請稍後再試。
 assert "即將開放" in sub
 (out / "assets" / "subscribe.js").write_text(sub)
 
-for rel, up in [("index.html", ""), ("grok-bot-to-hermes/index.html", "../")]:
+for rel in ["index.html", "grok-bot-to-hermes/index.html", "en/index.html", "en/grok-bot-to-hermes/index.html"]:
+    up = "../" * rel.count("/")
     html = (site / rel).read_text()
-    html = html.replace('href="/assets/', f'href="{up}assets/').replace('src="/assets/', f'src="{up}assets/')
-    html = html.replace('src="/img/', f'src="{up}img/')
-    html = html.replace('href="/grok-bot-to-hermes/', f'href="{up}grok-bot-to-hermes/')
-    html = html.replace('href="/"', f'href="{up or "./"}"')
     html = html.replace('<link rel="canonical" href="/grok-bot-to-hermes/">\n', "")
-    html = html.replace('<a href="SUBSTACK_URL">English</a>', '<a href="https://github.com/MrLongMo/homer-hermes-kit#faq">English</a>')
+    html = re.sub(r'(href|src)="/(?!/)([^"]*)"', lambda m: f'{m.group(1)}="{(up + m.group(2)) or "./"}"', html)
+    html = html.replace('<a href="SUBSTACK_URL">English</a>', f'<a href="{up}en/">English</a>')
     assert not re.search(r'(href|src)="/(?!/)', html), rel
     dest = out / rel
     dest.parent.mkdir(parents=True, exist_ok=True)

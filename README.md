@@ -1,10 +1,12 @@
 # Homer 搬家程式｜Grok Bot → Hermes
 
+**中文**｜[English](README.en.md)
+
 **懶人包（圖文教學）**：https://mrlongmo.github.io/homer-hermes-kit/grok-bot-to-hermes/
 
 一個視窗幫你：安裝 Hermes → 裝好中文設定 → 用你現有的帳號選 AI → 把 Grok Bot 連工作檔案一起搬過來。不用打指令。
 
-**下載（Mac，Apple 晶片）**：[Homer-Mover-mac-zh.zip](https://github.com/MrLongMo/homer-hermes-kit/releases/latest/download/Homer-Mover-mac-zh.zip)　·　English: [Homer-Mover-mac-en.zip](https://github.com/MrLongMo/homer-hermes-kit/releases/latest/download/Homer-Mover-mac-en.zip)
+**下載（Mac，Apple 晶片）**：[Homer-Mover-mac-zh.zip](https://github.com/MrLongMo/homer-hermes-kit/releases/latest/download/Homer-Mover-mac-zh.zip)
 
 ## 怎麼用
 
@@ -23,14 +25,6 @@
 - **打開 Hermes 後不知道做什麼**：在對話框打「你好」。或者跟小助手說「幫我設定」「檢查一下」「幫我省 token」。
 - **排程沒有跑**：Hermes 在你的電腦上執行，關機或睡眠時不會跑。搬過來的排程預設暫停，要跟小助手說「開啟 XX 排程」。
 - **卡住了**：展開程式底部的「詳細紀錄」，截圖到 [Issues](https://github.com/MrLongMo/homer-hermes-kit/issues) 問我們。
-
-## FAQ
-
-- **“Can’t be opened” / “unidentified developer” on Mac**: right-click the app → Open → Open. The app isn’t signed with an Apple developer certificate yet; all source is here.
-- **Intel Mac / Windows**: official Hermes Desktop needs Apple silicon. Windows version coming.
-- **No Grok subscription**: pick ChatGPT, OpenRouter or the free Nous Portal plan; “More options” accepts DeepSeek, Gemini, OpenAI, Claude and other API keys.
-- **After Hermes opens**: type “hi” in the chat box; the getting-started wizard takes it from there.
-- **Stuck**: expand “Details” at the bottom of the app, screenshot it and open an [issue](https://github.com/MrLongMo/homer-hermes-kit/issues).
 
 ## 裡面有什麼
 

@@ -278,7 +278,7 @@ window.addEventListener("pywebviewready", async () => {
   $("s4-again").onclick = () => { $("s4-copy").textContent = T.copy; busy(true); api.prepare_move(); };
   $("s4-next").onclick = () => setStep(5);
   $("s5-go").onclick = () => api.finish();
-  $("help").onclick = (e) => { e.preventDefault(); api.open_url(T.lang === "en" ? "https://github.com/MrLongMo/homer-hermes-kit#faq" : "https://github.com/MrLongMo/homer-hermes-kit#常見問題"); };
+  $("help").onclick = (e) => { e.preventDefault(); api.open_url(T.lang === "en" ? "https://github.com/MrLongMo/homer-hermes-kit/blob/main/README.en.md#faq" : "https://github.com/MrLongMo/homer-hermes-kit#常見問題"); };
   refresh().catch(e => showErr(String(e)));
 });
 </script>
