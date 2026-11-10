@@ -1,5 +1,7 @@
 # Homer 搬家程式｜Grok Bot → Hermes
 
+**懶人包（圖文教學）**：https://mrlongmo.github.io/homer-hermes-kit/grok-bot-to-hermes/
+
 一個視窗幫你：安裝 Hermes → 裝好中文設定 → 用你現有的帳號選 AI → 把 Grok Bot 連工作檔案一起搬過來。不用打指令。
 
 **下載（Mac，Apple 晶片）**：[Homer-Mover-mac-zh.zip](https://github.com/MrLongMo/homer-hermes-kit/releases/latest/download/Homer-Mover-mac-zh.zip)　·　English: [Homer-Mover-mac-en.zip](https://github.com/MrLongMo/homer-hermes-kit/releases/latest/download/Homer-Mover-mac-en.zip)
